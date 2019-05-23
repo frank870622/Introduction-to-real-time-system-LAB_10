@@ -353,7 +353,7 @@ int start_schedule(int schedule_num)
             }
 
             //context switch
-            if (runvector[i].size() > 0 && readyvector_low.size() > 0 && 0) // this scenario don't have preemption
+            if (runvector[i].size() > 0 && readyvector_low.size() > 0) // this scenario don't have preemption
             {
                 //context switch with shortest execution time
                 if (runvector[i].begin()->execution_time > readyvector_low.begin()->execution_time + 1 && 0) //lab6 use deadline
@@ -370,21 +370,21 @@ int start_schedule(int schedule_num)
                     outputstring[i] += "\t" + to_string(process_time + 1) + " Task" + to_string(runvector[i].begin()->ID) + " "; //task
                     continue;                                                                                                    //because context switch ,at this moment, this processor can't do anyting else
                 }
-                //context switch with shortest slack time         //lab7 without context switch time
-                if (get_slack_time(runvector[i][0]) > get_slack_time(readyvector_low[0]))
+                //context switch with shortest period        //lab7 without context switch time
+                if (runvector[i].begin()->period > readyvector_low.begin()->period)
                 {
                     runvector[i][0].suspend = 1;                //set context switch flag
                     readyvector_low.push_back(runvector[i][0]); //move running task to ready queue
                     runvector[i].erase(runvector[i].begin());   //remove running task
                     //outputstring[i] += to_string(process_time) + "\n\t" + to_string(process_time) + " Context Switch " + to_string(process_time + 1) + "\n"; //output context switch
-                    sort(readyvector_low.begin(), readyvector_low.end(), sort_slack_time); //sort ready queue by time
+                    sort(readyvector_low.begin(), readyvector_low.end(), sort_period_time); //sort ready queue by time
 
                     runvector[i].push_back(readyvector_low[0]);     //move another to run queue
                     readyvector_low.erase(readyvector_low.begin()); //remove from ready queue
                     //runvector[i][0].waiting_time++;                                                                              //even if the task has been move to running queue, the task has not been execute yet, so the moved task's waiting time need to be added
                     outputstring[i] += to_string(process_time /* + 1*/) + "\n\t" + to_string(process_time /* + 1*/) + " Task" + to_string(runvector[i].begin()->ID) + " "; //task
                     //continue;                                                                                                    //because context switch ,at this moment, this processor can't do anyting else
-                    sort(readyvector_low.begin(), readyvector_low.end(), sort_slack_time); //sort ready queue by time
+                    sort(readyvector_low.begin(), readyvector_low.end(), sort_period_time); //sort ready queue by time
                 }
                 //in lab6 when two tasks have same deadline, lower id need to be execute first, lab7 don't have this condition
                 else if (runvector[i].begin()->deadline == readyvector_low.begin()->deadline && 0)
